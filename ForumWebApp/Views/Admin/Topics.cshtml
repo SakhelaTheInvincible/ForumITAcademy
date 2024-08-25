@@ -1,0 +1,66 @@
+﻿@model IEnumerable<Forum.Application.MainTopics.TopicAdminResponseModel>
+
+<h1>Topic</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Comment Count</th>
+            <th>Created At</th>
+            <th>User Name</th>
+            <th>Status</th>
+            <th>State</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var topic in Model)
+        {
+            <tr>
+                <td>@topic.Title</td>
+                <td>@topic.CommentCount</td>
+                <td>@topic.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>@topic.UserName</td>
+                <td>
+                    @if (topic.Status == "Active")
+                    {
+                        <span class="text-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">Inactive</span>
+                    }
+                </td>
+                <td>
+                    @switch (topic.State)
+                    {
+                        case "Show":
+                            <span class="text-primary">Show</span>
+                            break;
+                        case "Hide":
+                            <span class="text-warning">Hide</span>
+                            break;
+                        case "Pending":
+                            <span class="text-secondary">Pending</span>
+                            break;
+                    }
+                </td>
+                <td>
+                    <form method="post" asp-controller="Topic" asp-action="ChangeState" asp-route-id="@topic.Id">
+                        <select name="state">
+                            <option value="Show">Show</option>
+                            <option value="Hide">Hide</option>
+                        </select>
+                        <button type="submit">Change State</button>
+                    </form>
+
+                    <form method="put" asp-controller="Topic" asp-action="ChangeStatus" asp-route-id="@topic.Id" asp-route-status="@topic.Status">
+                        <input type="hidden" name="status" value="@(topic.Status == "Active" ? "Inactive" : "Active")" />
+                        <button type="submit">@(topic.Status == "Active" ? "Deactivate" : "Activate")</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

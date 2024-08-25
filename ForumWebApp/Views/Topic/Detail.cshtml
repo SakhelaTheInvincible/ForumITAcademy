@@ -1,0 +1,69 @@
+﻿@using Forum.Application.MainComments
+@using Forum.Application.MainTopics;
+@using Forum.Domain.user
+@using Microsoft.AspNetCore.Identity
+@model TopicResponseModel
+@inject UserManager<User> UserManager
+@inject ICommentService commentService
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+
+
+<div class="container">
+
+
+    <div class="row">
+
+        <div class="col-md-4">
+            <h3 class="my-3">Title : @Model.Title</h3>
+            <p>@Model.Content</p>
+            <p>Comment Count : @Model.CommentCount</p>
+
+        </div>
+        @if (User.Identity!.IsAuthenticated)
+        {
+            @if (Model.AuthorId.ToString() == UserManager.GetUserId(User))
+            {
+                <a type="btn -success" asp-controller="Topic" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                <a type="btn -success" asp-controller="Topic" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary">Delete</a>
+            }
+            @if (Model.Status == "Active") 
+            {
+                <a type="btn -success" asp-controller="Comment" asp-action="Create" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary">Add Comment</a>
+            }
+        }
+
+        
+
+    </div>
+
+    @{
+        var comments = await commentService.GetCommentsByTopic(CancellationToken.None, Model.Id);
+
+        foreach (var comment in comments)
+        {
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <strong>@comment.UserName</strong>
+                        <span class="float-right">@comment.ModifiedAt.ToString("MMMM dd, yyyy")</span>
+                    </div>
+                    <div class="card-body">
+                        <p>@comment.Content</p>
+                        @if (User.Identity.IsAuthenticated && UserManager.GetUserName(User) == comment.UserName)
+                        {
+                            <div class="float-right">
+                                <a asp-action="Edit" asp-controller="Comment" asp-route-id="@comment.Id" class="btn btn-primary">Update</a>
+                                <a asp-action="Delete" asp-controller="Comment" asp-route-id="@comment.Id" class="btn btn-danger">Delete</a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+</div>

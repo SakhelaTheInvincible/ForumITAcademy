@@ -1,0 +1,12 @@
+﻿@using Forum.Application.MainComments
+@model CommentUpdateModel
+
+<form method="post" asp-action="Edit" asp-controller="Comment" enctype="multipart/form-data">
+    <input type="hidden" value="AddressId" id="AddressId" />
+    <div class="form-group">
+        <label asp-for="Content">Content</label>
+        <input asp-for="Content" class="form-control" placeholder="Description">
+        <span asp-validation-for="Content" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

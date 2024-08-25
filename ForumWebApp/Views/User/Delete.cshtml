@@ -1,0 +1,16 @@
+﻿@using Forum.Application.MainTopics
+@using Forum.Domain.user
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<User> UserManager
+@{
+    var Id = UserManager.GetUserId(User);
+}
+
+<h1>Are you sure you want to delete account?</h1>
+<div class="form-group">
+<form action="Delete" method="post">
+    <input type="hidden" asp-for=@Id />
+    <input type="submit" value="Confirm" class="btn btn-danger float-right mt-3" />
+</form>
+</div>

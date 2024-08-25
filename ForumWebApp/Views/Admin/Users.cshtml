@@ -1,0 +1,42 @@
+﻿@using Forum.Application.MainUsers;
+@model IEnumerable<UserAdminResponseModel>
+
+<h1>Users</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>User Name</th>
+            <th>Email</th>
+            <th>Created At</th>
+            <th>Is Banned</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+                <td>@user.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>
+                    @if (user.IsBanned)
+                    {
+                        <span class="text-danger">Yes</span>
+                    }
+                    else
+                    {
+                        <span class="text-success">No</span>
+                    }
+                </td>
+                <td>
+                    <form asp-action="Ban" asp-controller="User" asp-route-id="@user.Id" asp-route-isBanned="@user.IsBanned">
+                        <input type="hidden" name="isBanned" value="@user.IsBanned" />
+                        <button type="submit">@(user.IsBanned ? "Unban" : "Ban")</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
